@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f9fc">
+  <meta name="description" content="RoboAware in action: side-by-side experiments on modular and end-to-end policy coordination, contact-rich manipulation, and execution across robot embodiments.">
+  <title>RoboAware: Learning to Coordinate Embodied Skills from Counterfactual Outcomes</title>
+  <link rel="icon" href="assets/branding/roboaware-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="gallery-data.js" defer></script>
+  <script src="gallery.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#experiments">Skip to experiments</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="#top" aria-label="RoboAware home"><img class="brand-mark" src="assets/branding/roboaware-icon.svg" alt="" width="66" height="33">Robo<span class="accent">Aware</span></a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="intro container" aria-labelledby="intro-title">
+      <h1 id="intro-title">Learning to Coordinate Embodied Skills from Counterfactual Outcomes</h1>
+      <p class="intro-copy">TL;DR: We harness coding agents’ skill orchestration by learning only a counterfactual-outcome-aware coordinator that selects modular or end-to-end policies where each excels, combining fixed executor interfaces and code generator to achieve high success rates across diverse tasks.</p>
+      <hr class="intro-divider">
+    </section>
+
+    <section class="abstract container" aria-labelledby="abstract-title">
+      <h2 id="abstract-title">Abstract</h2>
+      <div class="abstract-panel">
+        <p>Embodied coding agents can combine modular robot skills with frozen end-to-end policies, yet effective composition requires anticipating which policy family will succeed in the current physical state. We present RoboAware, which builds on coding agents’ skill orchestration by learning only a state-conditioned responsibility coordinator from counterfactual outcomes.</p>
+        <p>Inspired by the success of REPL, we propose the P<sup>5</sup> schema and formulate a hierarchical MDP based on it. P<sup>5</sup> organizes skills uniformly into five semantic stages, defining where responsibility can be compared. To address the lack of counterfactual branch outcomes in existing work, we introduce State-Locked Counterfactual Branching, which restores the same training state to generate and execute a code block from each admissible family, exposing outcomes that selected-branch experience leaves unobserved.</p>
+        <p>Building on this, we propose Execution-Aware Learning, which combines Monte Carlo tree search with Q-learning to distill these outcomes into family-conditioned values. At deployment, the coordinator selects the policy family according to observable context, and the frozen coding agent generates the next local code block. Comprehensive single-episode evaluations on 100 tasks show that RoboAware reaches a 77.0% overall success rate, with SOTA averages of 90.0% on RoboSuite, 73.8% on diverse LIBERO-Pro task clusters, and 90.0% on challenging RoboTwin bimanual tasks, outperforming existing code-as-policy and VLA-harness baselines.</p>
+      </div>
+    </section>
+
+    <section id="experiments" class="experiments container" aria-labelledby="gallery-title">
+      <header class="section-heading">
+        <h2 id="gallery-title">Experiment</h2>
+      </header>
+      <div id="gallery" class="gallery"></div>
+      <noscript><p class="noscript">Enable JavaScript to browse the comparison gallery and play the experiment videos.</p></noscript>
+    </section>
+  </main>
+  <footer class="site-footer container">
+    <a class="wordmark footer-brand" href="#top">Robo<span class="accent">Aware</span></a>
+    <a class="back-top" href="#top">Back to top <span aria-hidden="true">↑</span></a>
+  </footer>
+</body>
+</html>
