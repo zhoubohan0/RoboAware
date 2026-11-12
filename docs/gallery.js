@@ -23,7 +23,7 @@ function videoPane(video, experiment, index) {
 }
 
 function cardMarkup(experiment) {
-  return `<article id="${experiment.id}" class="comparison-card${experiment.group === 'embodiments' ? ' robot-card' : ''}" aria-labelledby="${experiment.id}-title">
+  return `<article id="${experiment.id}" class="comparison-card${experiment.group === 'embodiments' ? ' robot-card' : experiment.group === 'realworld' ? ' realworld-card' : ''}" aria-labelledby="${experiment.id}-title">
     <header class="card-intro"><div><p class="card-tag">${escapeHTML(experiment.tag)}</p><h4 id="${experiment.id}-title">${escapeHTML(experiment.title)}</h4></div></header>
     <div class="comparison-scroll" tabindex="0" role="region" aria-label="${escapeHTML(experiment.title)} Side-by-side videos; scroll horizontally on small screens."><div class="video-grid" style="--columns:${experiment.videos.length}">${experiment.videos.map((video, index) => videoPane(video, experiment, index)).join('')}</div></div>
     ${experiment.caption ? `<p class="card-caption">${escapeHTML(experiment.caption)}</p>` : ''}
@@ -87,7 +87,12 @@ for (const experiment of experiments) {
     if (status.textContent === 'Loading all videos…') status.textContent = '';
     refresh();
   };
-  const setSpeed = () => videos.forEach(video => { video.playbackRate = Number(speedSelect.value); });
+  const applyRate = video => {
+    const index = videos.indexOf(video);
+    const relative = Number((experiment.videos[index] && experiment.videos[index].rate) || 1);
+    video.playbackRate = Number(speedSelect.value) * relative;
+  };
+  const setSpeed = () => videos.forEach(applyRate);
   setSpeed();
 
   const startTogether = async () => {
@@ -102,7 +107,7 @@ for (const experiment of experiments) {
       if (thisRun !== runId) return;
       videos.forEach(video => {
         video.currentTime = 0;
-        video.playbackRate = Number(speedSelect.value);
+        applyRate(video);
       });
       const results = await Promise.allSettled(videos.map(video => video.play()));
       if (thisRun !== runId) { videos.forEach(video => video.pause()); return; }
@@ -110,7 +115,7 @@ for (const experiment of experiments) {
         videos.forEach(video => video.pause());
         status.textContent = 'Playback was interrupted. Try Play together again, or use each video’s play button.';
       } else {
-        status.textContent = 'Started together · each clip holds its final frame.';
+        status.textContent = '';
       }
     } catch {
       if (thisRun === runId) status.textContent = 'A video could not be loaded. Try again or open its original file.';
@@ -149,13 +154,14 @@ for (const experiment of experiments) {
     video.addEventListener('error', showError);
     video.querySelector('source').addEventListener('error', showError);
     overlay.addEventListener('click', async () => {
-      video.playbackRate = Number(speedSelect.value);
+      applyRate(video);
       frame.classList.add('has-started');
       try { await video.play(); }
       catch { frame.classList.remove('has-started'); status.textContent = 'Playback could not start. Try again or use Play together.'; }
     });
   }
-  controllers.push({ card, pause, videos });
+  controllers.push({ card, pause, startTogether, videos });
+  if (experiment.autoStart) startTogether();
 }
 
 if ('IntersectionObserver' in window) {

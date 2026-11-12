@@ -1,6 +1,7 @@
 /* Paths retain the original directory structure under assets/. */
 const hybridRoot = 'assets/ablation-hybrid/videos-cropped';
 const robotRoot = 'assets/ablation-cross-embodied';
+const realWorldRoot = 'assets/real-world';
 const policyVideos = (task, modularFile, modularOutcome) => [
   { label: 'End-to-end only', detail: 'RoboAware-EO', src: `${hybridRoot}/${task}/01_pure_vla_failure.mp4`, outcome: 'Task not completed', result: 'failure' },
   { label: 'Modular only', detail: 'RoboAware-MO', src: `${hybridRoot}/${task}/${modularFile}.mp4`, outcome: modularOutcome, result: 'failure' },
@@ -11,12 +12,17 @@ const robotVideos = task => [
 ].map(([label, file]) => ({ label, detail: 'RoboAware', src: `${robotRoot}/${task}/${file}.mp4` }));
 
 const experimentGroups = [
+  { id: 'realworld', number: '00', label: 'REAL WORLD DEPLOYMENT', title: 'From simulation to real robot assessment.', description: 'We first load the assets in simulation to verify the effectiveness of the frozen RoboAware coordinator, and then evaluate the same task scenario zero-shot on an AgileX PiPER dual-arm system.' },
   { id: 'coordination', number: '01', label: 'POLICY COORDINATION', title: 'Two policy families. One coordinated execution.', description: 'Modular-only and end-to-end-only variants fail at different stages. RoboAware selects the policy family at P⁵ skill boundaries, combining their capabilities within a task.' },
   { id: 'contact', number: '02', label: 'CONTACT-RICH CONTROL', title: 'The final interaction matters.', description: 'The microwave task tests precise contact with an articulated object. These clips compare the door-closing interaction for Cap-X and RoboAware.' },
   { id: 'embodiments', number: '03', label: 'ACROSS ROBOT EMBODIMENTS', title: 'Different robots. A shared skill interface.', description: 'Four tasks shown across Franka Panda, UR5 + WSG, ARX X5, and Aloha AgileX. These short qualitative demonstrations illustrate execution across robot embodiments.' },
 ];
 
 const experiments = [
+  { id: 'bottle-cup', group: 'realworld', title: 'Neatly arrange the cups and bowls into a plate.', tag: '', caption: '', speed: 2, autoStart: true, videos: [
+    { label: 'Sim · 1×', detail: 'Simulation', src: `${realWorldRoot}/bottle-cup-placement/sim/head-view.mp4`, rate: 1 },
+    { label: 'Real · 5.3×', detail: 'Real robot · speed-aligned', src: `${realWorldRoot}/bottle-cup-placement/real/head-view.mp4`, rate: 5.3, ours: true },
+  ] },
   { id: 'spatial-bowl', group: 'coordination', title: 'Pick the akita black bowl between the plate and the ramekin and place it on the plate.', tag: 'LIBERO-Pro · Spat-S_00', caption: 'Under a spatial perturbation, neither policy family alone completes this example. Coordinated execution reaches the target plate.', videos: policyVideos('spats00', '02_pure_non_vla_failure', 'Task not completed') },
   { id: 'salad-dressing', group: 'coordination', title: 'Pick the salad dressing and place it in the basket.', tag: 'LIBERO-Pro · Obj-S_02', caption: 'The modular-only grasp slips; the end-to-end-only rollout also fails. RoboAware combines the two families to complete the placement.', videos: policyVideos('objs02', '02_pure_non_vla_grasp_slip_failure', 'Grasp slips') },
   { id: 'microwave', group: 'contact', title: 'Close the microwave door.', tag: 'LIBERO-Pro · Microwave task', caption: 'A close-up comparison of the door-closing outcome. The manuscript discusses this interaction in its contact-rich task comparison.', videos: [
