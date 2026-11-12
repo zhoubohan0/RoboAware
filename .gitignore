@@ -1,3 +1,10 @@
 .DS_Store
 __pycache__/
 *.py[cod]
+
+# Offline / unused alternate assets (local only; not published)
+docs/assets/ablation-hybrid/videos-cropped-with-task-names/
+docs/assets/ablation-hybrid/videos-raw-with-task-names/
+docs/assets/ablation-cross-embodied/place_bread_basket/aloha_agilex/
+docs/assets/ablation-cross-embodied/place_bread_basket/aloha_agilex_raw.mp4
+docs/assets/branding/roboaware-icon.pdf
